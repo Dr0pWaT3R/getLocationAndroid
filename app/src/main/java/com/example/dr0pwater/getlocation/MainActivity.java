@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -24,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dr0pwater.getlocation.data.Customerpoint;
+import com.example.dr0pwater.getlocation.data.Customerpointdb;
+import com.example.dr0pwater.getlocation.data.Database;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -36,22 +39,105 @@ public class MainActivity extends Activity implements LocationListener {
 
     private LocationManager locationManager;
     private boolean providerldisabled = true,burteg_GPS = true, burteg_NETWORK = true;
-    private LocationListener locationListener;
-    private Button getLocationBtn;
+    private Button getLocationBtn, showdataBtn;
     private TextView textView;
+    private Database database;
+    private Customerpointdb customerpointdb;
+    private ArrayList<Customerpoint> customerpoint;
 
+    public void getCity() {
+        customerpoint = customerpointdb.getCity();
+        Spinner dynamicSpinner = (Spinner) findViewById(R.id.dynamic_spinner_city);
+        String[] items = new String[customerpoint.size()];
+
+        if(customerpoint.size()>0){
+            Log.d("log", "cuspoint: "+customerpoint.get(0).city);
+            for(int i=0; i<customerpoint.size(); i++){
+                items[i] = customerpoint.get(i).city;
+            }
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, items);
+
+        dynamicSpinner.setAdapter(adapter);
+
+
+        dynamicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v("item", (String) parent.getItemAtPosition(position));
+                parent.getItemAtPosition(position);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+    }
+    public void getDuureg() {
+        customerpoint = customerpointdb.getDuureg();
+        Spinner dynamicSpinner = (Spinner) findViewById(R.id.dynamic_spinner_duureg);
+        String[] items = new String[customerpoint.size()];
+
+        if(customerpoint.size()>0){
+            Log.d("log", "cuspoint: "+customerpoint.get(0).duureg);
+            for(int i=0; i<customerpoint.size(); i++){
+                items[i] = customerpoint.get(i).duureg;
+            }
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, items);
+
+        dynamicSpinner.setAdapter(adapter);
+
+
+        dynamicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Log.v("item", (String) parent.getItemAtPosition(position));
+                parent.getItemAtPosition(position);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getLocationBtn = (Button) findViewById(R.id.getLocation_btn_id);
+        showdataBtn = (Button) findViewById(R.id.showdata_btn_id);
         textView = (TextView) findViewById(R.id.setLocation_txtView_id);
+        database = new Database(this);
+        customerpointdb = new Customerpointdb(database);
+        getCity();
+        getDuureg();
+//        customerpointdb.insertCustomerpoint("ub","sukhbaatar","3r khoroo","delguur3","0.00");
         getLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 textView.setText("latitude: "+getLocation().getLatitude()+" longtitude: "+ getLocation().getLongitude());
             }
         });
+
+        showdataBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("showdata", ":customerpointSize- "+customerpointdb.getall().size());
+            }
+        });
+
 //        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 //
 //        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -81,10 +167,10 @@ public class MainActivity extends Activity implements LocationListener {
         // Apply the adapter to the spinner
         staticSpinner.setAdapter(staticAdapter);
         getCustomerpoint();
-        ArrayList<Customerpoint> customerpoints = new ArrayList<>();
         String jsonStr = "{\"customerpoint\":[{\"id\": \"1\", \"city\": \"ub\", \"duureg\": \"bayangol\", \"khoroo\": \"2r khoroo\", \"name\": \"delguur\", \"position\": \"0\"}," +
                 "{\"id\": \"2\", \"city\": \"ub\", \"duureg\": \"bayanzurkh\", \"khoroo\": \"4r khoroo\", \"name\": \"delguur1\", \"position\": \"0\"}," +
                 "{\"id\": \"3\", \"city\": \"ub\", \"duureg\": \"sukhbaatar\", \"khoroo\": \"3r khoroo\", \"name\": \"delguur2\", \"position\": \"0\"}]}";
+
 
     }
 

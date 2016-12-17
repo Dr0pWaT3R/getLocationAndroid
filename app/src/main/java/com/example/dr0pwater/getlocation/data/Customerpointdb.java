@@ -30,7 +30,8 @@ public class Customerpointdb {
                 +_city+ " text,"
                 +_duureg+ " text,"
                 +_khoroo+ " text,"
-                +_name+ " text"
+                +_name+ " text,"
+                +_position+ " text"
                 +" ); " ;
         return CREATE_BOOK_TABLE;
     }
@@ -103,6 +104,55 @@ public class Customerpointdb {
         cursor.close();
         db.close();
         return customerpoints;
+    }
+    public ArrayList<Customerpoint> getCity() {
+        ArrayList<Customerpoint> customerpoints = new ArrayList<>();
+
+        String query = "SELECT DISTINCT city FROM " + table;
+        SQLiteDatabase db = myDatabase.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Customerpoint customerpoint = null;
+        if (cursor.moveToFirst()) {
+            do {
+
+                customerpoint = new Customerpoint();
+                customerpoint.city = cursor.getString(cursor.getColumnIndex(_city));
+                customerpoints.add(customerpoint);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return customerpoints;
+    }
+    public ArrayList<Customerpoint> getDuureg() {
+        ArrayList<Customerpoint> customerpoints = new ArrayList<>();
+
+        String query = "SELECT DISTINCT duureg FROM " + table;
+        SQLiteDatabase db = myDatabase.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Customerpoint customerpoint = null;
+        if (cursor.moveToFirst()) {
+            do {
+
+                customerpoint = new Customerpoint();
+                customerpoint.duureg = cursor.getString(cursor.getColumnIndex(_duureg));
+                customerpoints.add(customerpoint);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return customerpoints;
+    }
+
+    public void insertCustomerpoint(String city, String duureg, String khoroo, String name, String position){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(_city, city);
+        contentValues.put(_duureg, duureg);
+        contentValues.put(_khoroo, khoroo);
+        contentValues.put(_name, name);
+        contentValues.put(_position, position);
+        myDatabase.getWritableDatabase().insertOrThrow(table,"", contentValues);
+
     }
 
     public void deleteall() {
