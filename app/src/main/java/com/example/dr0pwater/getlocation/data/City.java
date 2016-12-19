@@ -7,33 +7,32 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by dr0pwater on 12/16/16.
+ * Created by dr0pwater on 12/17/16.
  */
 
-public class Customerpoint {
+public class City {
     public int id;
-    public String city, duureg, khoroo, name, position;
-    public Customerpoint(){}
-    public Customerpoint(JSONObject object){
+    public String name="";
+    public City(){}
+    public City(JSONObject object){
         JSONObject obj;
         try{
             id = object.getInt("pk");
             obj = object.getJSONObject("fields");
-            city = obj.getString("city");
-            duureg = obj.getString("duureg");
+            name = obj.getString("name");
         }catch (JSONException e){
             e.printStackTrace();
         }
     }
-    public static ArrayList<Customerpoint> fromJson (JSONArray jsonObject){
-        ArrayList<Customerpoint> customerpoints = new ArrayList<>();
+    public static ArrayList<City> fromJson (JSONArray jsonObject){
+        ArrayList<City> cities = new ArrayList<>();
         for (int i=0; i<jsonObject.length(); i++){
             try {
-                customerpoints.add(new Customerpoint(jsonObject.getJSONObject(i)));
+                cities.add(new City(jsonObject.getJSONObject(i)));
             }catch (JSONException e ){
                 e.printStackTrace();
             }
         }
-        return  customerpoints;
+        return cities;
     }
 }

@@ -12,6 +12,14 @@ public class Database extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "ApuLocation";
+    private static Database sInstance;
+    public static synchronized Database getInstance(Context context){
+        // Use the application context, which will ensure that you don't accidentally leak an Activity's context.
+        if (sInstance == null) {
+            sInstance = new Database(context.getApplicationContext());
+        }
+        return sInstance;
+    }
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -25,10 +33,20 @@ public class Database extends SQLiteOpenHelper {
         createTalbes(sqLiteDatabase);
     }
     public void createTalbes(SQLiteDatabase db){
-        db.execSQL(Customerpointdb.createtable());
+        db.execSQL(Customerdb.createtable());
+        db.execSQL(Citydb.createtable());
+        db.execSQL(Districtdb.createtable());
+        db.execSQL(Commissiondb.createtable());
+        db.execSQL(Typesdb.createtable());
+        db.execSQL(UpdateLocationdb.createtable());
     }
     public  void dropTables(SQLiteDatabase db){
-        db.execSQL("DROP TABLE IF EXISTS Customerpoint");
+        db.execSQL(Customerdb.droptable());
+        db.execSQL(Citydb.droptable());
+        db.execSQL(Districtdb.droptable());
+        db.execSQL(Commissiondb.droptable());
+        db.execSQL(Typesdb.droptable());
+        db.execSQL(UpdateLocationdb.droptable());
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
@@ -39,7 +57,5 @@ public class Database extends SQLiteOpenHelper {
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         this.onUpgrade(db, oldVersion, newVersion);
     }
-
-
 
 }

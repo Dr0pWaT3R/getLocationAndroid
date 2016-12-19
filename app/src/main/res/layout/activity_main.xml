@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/happynewyear"
+    android:background="@drawable/background"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,46 +12,84 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.dr0pwater.getlocation.MainActivity">
 
-    <Spinner
-        android:id="@+id/static_spinner"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp" />
-
-    <Spinner
-        android:id="@+id/dynamic_spinner_city"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp" />
-
-    <Spinner
-        android:id="@+id/dynamic_spinner_duureg"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp" />
-
-    <Button
-        android:text="Байршил авах"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:id="@+id/getLocation_btn_id" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@+id/getCustomer_btn_id">
 
-    <Button
-        android:text="Байршил авах"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:id="@+id/showdata_btn_id" />
+        <Spinner
+            android:id="@+id/dynamic_spinner_city"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#9C27B0"
+            android:spinnerMode="dropdown"
+            android:layout_marginTop="10dp" />
 
+        <Spinner
+            android:id="@+id/dynamic_spinner_duureg"
+            android:background="#23d"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#000"
-        android:id="@+id/setLocation_txtView_id" />
+        <Spinner
+            android:id="@+id/dynamic_spinner_khoroo"
+            android:layout_marginBottom="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#E91E63"
+            android:spinnerMode="dropdown"
+            android:layout_marginTop="10dp" />
+
+        <Spinner
+            android:id="@+id/dynamic_spinner_types"
+            android:layout_marginBottom="10dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#2196F3"
+            android:spinnerMode="dropdown"
+            android:layout_marginTop="10dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="800dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TableLayout
+                    android:id="@+id/table_customer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="50dp">
+                </TableLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:text="Байршил авах"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:id="@+id/getLocation_btn_id" />
+
+        <Button
+            android:text="Мэдээлэл"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#2196F3"
+            android:id="@+id/showdata_btn_id" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:id="@+id/setLocation_txtView_id" />
+
+    </LinearLayout>
 
 </LinearLayout>
