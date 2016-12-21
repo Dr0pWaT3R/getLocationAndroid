@@ -76,7 +76,7 @@ public class UploadModel {
 
         RequestParams requestParams = new RequestParams();
 
-
+        Log.d("showdata", "UploadModel: "+jsonObject.toString()+"url:"+DataSendAndDownload.HOST+"api/location");
         requestParams.add("jsondata",jsonObject.toString());
 
         myClient.post(context, DataSendAndDownload.HOST+"api/location/", requestParams, new AsyncHttpResponseHandler() {
@@ -89,7 +89,7 @@ public class UploadModel {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+                Log.d("showdata", "uploadError: "+"url:"+DataSendAndDownload.HOST+"api/location");
             }
         });
     }

@@ -339,18 +339,18 @@ public class MainActivity extends Activity implements LocationListener {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
                         mLastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         if (mLastLocation != null)
-//                            Toast.makeText(this,
-//                                    "" + mLastLocation.getLatitude(),
-//                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(this,
+                                    "" + mLastLocation.getLatitude(),
+                                    Toast.LENGTH_LONG).show();
                         burteg_GPS = false;
                     }
                     if (isNetworkEnabled && burteg_NETWORK) {
                         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
                         mLastLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                         if (mLastLocation != null)
-//                            Toast.makeText(this,
-//                                    "" + mLastLocation.getLatitude(),
-//                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(this,
+                                    "" + mLastLocation.getLatitude(),
+                                    Toast.LENGTH_LONG).show();
                         burteg_NETWORK = false;
                     }
 
@@ -470,16 +470,17 @@ public class MainActivity extends Activity implements LocationListener {
             int i = (int)view.getTag();
             if(customerInfo.get(i-1).position.equals("0,0") || customerInfo.get(i-1).position.equals("0.0,0.0")) {
 
-                if (getLocation().getLatitude()+","+getLocation().getLongitude() != "") {
-                    String latLong = getLocation().getLatitude() + "," + getLocation().getLongitude();
+                if(getLocation() != null){
+                    String latLong = getLocation().getLatitude()+ "," + getLocation().getLongitude();
                     Log.d("sdaaa", "onClick: "+customerInfo.get(i - 1).id+"latlong:"+latLong);
                     updateLocationdb.insertPosition(customerInfo.get(i - 1).id,latLong);
                     customerdb.updatePosition(customerInfo.get(i - 1).id, latLong);
+                    customerInfo = customerdb.getCustomerInfo(districtId,commissionId);
                     CreateTable();
                     Log.d("showdata", ":updateLocationdbSize-> " + updateLocationdb.getall().size());
                     Toast.makeText(getApplicationContext(), "Цэгийн мэдээлэл авлаа" + latLong, Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(getApplicationContext(), "tseg awah bolomjgui bn", Toast.LENGTH_SHORT).show();
+                } else{
+                    Toast.makeText(getApplicationContext(), "Цэг авах боломжгүй байна. Дахин оролдоно уу?", Toast.LENGTH_SHORT).show();
                 }
             }
             else

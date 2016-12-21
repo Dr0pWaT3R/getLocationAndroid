@@ -22,6 +22,7 @@ import com.example.dr0pwater.getlocation.data.District;
 import com.example.dr0pwater.getlocation.data.Districtdb;
 import com.example.dr0pwater.getlocation.data.Types;
 import com.example.dr0pwater.getlocation.data.Typesdb;
+import com.example.dr0pwater.getlocation.data.UpdateLocationdb;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -35,11 +36,13 @@ public class DataSendAndDownload extends Activity {
     final public static String HOST = "http://sales.smarts.mn/";
     private Database database;
     private Customerdb customerdb;
+    private UpdateLocationdb updateLocationdb;
     private Citydb citydb;
     private Districtdb districtdb;
     private Commissiondb commissiondb;
     private Typesdb typesdb;
     private Button sendDataBtn, sendDataActiveBtn, getCustomerBtn;
+    MainActivity mainAct;
     private boolean dataDownload = true;
     private int btnClickCount=0;
 
@@ -49,6 +52,8 @@ public class DataSendAndDownload extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
+        mainAct = new MainActivity();
+
         pref = getSharedPreferences("download.info", Context.MODE_PRIVATE);
         // Log.d("SHaredPreferences", pref.getString("username", ""));
         // Log.d("SHaredPreferences", pref.getString("password", ""));
@@ -58,6 +63,7 @@ public class DataSendAndDownload extends Activity {
         districtdb = new Districtdb(database);
         commissiondb = new Commissiondb(database);
         typesdb = new Typesdb(database);
+        updateLocationdb = new UpdateLocationdb(database);
         getCustomerBtn = (Button) findViewById(R.id.getCustomer_btn_id);
         sendDataBtn = (Button)findViewById(R.id.sendData_btn_id);
         sendDataActiveBtn = (Button)findViewById(R.id.sendData_btn_activeChange_id);
@@ -71,6 +77,7 @@ public class DataSendAndDownload extends Activity {
             public void onClick(View view) {
                 btnClickCount ++;
                 Log.d("showdata", ":customerdbSize-> "+ customerdb.getall().size());
+                Log.d("showdata", ":updateLocationdbSize-> "+ updateLocationdb.getall().size());
                 Toast.makeText(getApplicationContext(), "Нийт харилцагч: "+customerdb.getall().size(), Toast.LENGTH_SHORT).show();
                 if(btnClickCount == 10){
                     Toast.makeText(getApplicationContext(),"Мэдээлэл татах боломжтой", Toast.LENGTH_SHORT).show();
@@ -85,7 +92,12 @@ public class DataSendAndDownload extends Activity {
         sendDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UploadModel uploadModel=new UploadModel(getApplicationContext());
+                if(mainAct.isOnline()){
+                    UploadModel uploadModel=new UploadModel(getApplicationContext());
+                    Toast.makeText(getApplicationContext(),"Мэдээлэл илгээлээ БАЯРЛАЛАА :D", Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(getApplicationContext(), "Интернет холболтоо шалгана уу?", Toast.LENGTH_LONG).show();
+
             }
         });
         getCustomerBtn.setOnLongClickListener(new View.OnLongClickListener() {
@@ -96,9 +108,12 @@ public class DataSendAndDownload extends Activity {
                 editor = pref.edit();
                 editor.putBoolean("download", true);
                 editor.apply();
-                getCustomer();
-                getCustomerBtn.setEnabled(false);
-                Toast.makeText(getApplicationContext(), "Өгөгдөл татаж байна", Toast.LENGTH_LONG).show();
+                if(mainAct.isOnline()){
+                    getCustomer();
+                    getCustomerBtn.setEnabled(false);
+                    Toast.makeText(getApplicationContext(), "Өгөгдөл татаж байна", Toast.LENGTH_LONG).show();
+                }else
+                    Toast.makeText(getApplicationContext(), "Интернет холболтоо шалгана уу?", Toast.LENGTH_LONG).show();
                 return false;
             }
         });

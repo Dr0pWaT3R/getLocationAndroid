@@ -14,9 +14,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_above="@+id/getCustomer_btn_id">
+        android:layout_height="1100dp"
+        android:orientation="vertical">
 
         <Spinner
             android:id="@+id/dynamic_spinner_city"
@@ -24,49 +23,43 @@
             android:layout_height="wrap_content"
             android:background="#9C27B0"
             android:spinnerMode="dropdown"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <Spinner
             android:id="@+id/dynamic_spinner_duureg"
             android:background="#23d"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <Spinner
             android:id="@+id/dynamic_spinner_khoroo"
-            android:layout_marginBottom="10dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="#E91E63"
             android:spinnerMode="dropdown"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <Spinner
             android:id="@+id/dynamic_spinner_types"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="#2196F3"
             android:spinnerMode="dropdown"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="5dp" />
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="800dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" >
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
 
                 <TableLayout
                     android:id="@+id/table_customer"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="50dp">
+                    android:layout_height="match_parent">
                 </TableLayout>
-            </LinearLayout>
+
         </ScrollView>
 
         <Button
@@ -77,12 +70,7 @@
             android:background="@color/colorPrimary"
             android:id="@+id/getLocation_btn_id" />
 
-        <Button
-            android:text="Мэдээлэл"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#2196F3"
-            android:id="@+id/showdata_btn_id" />
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -90,6 +78,19 @@
                 android:textColor="#000"
                 android:id="@+id/setLocation_txtView_id" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="88dp">
+
+        <Button
+            android:text="Мэдээлэл"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#2196F3"
+            android:id="@+id/showdata_btn_id" />
     </LinearLayout>
 
 </LinearLayout>
