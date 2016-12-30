@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,7 +44,6 @@ public class DataSendAndDownload extends Activity {
     private Commissiondb commissiondb;
     private Typesdb typesdb;
     private Button sendDataBtn, sendDataActiveBtn, getCustomerBtn;
-    MainActivity mainAct;
     private boolean dataDownload = true;
     private int btnClickCount=0;
 
@@ -52,7 +53,6 @@ public class DataSendAndDownload extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
-        mainAct = new MainActivity();
 
         pref = getSharedPreferences("download.info", Context.MODE_PRIVATE);
         // Log.d("SHaredPreferences", pref.getString("username", ""));
@@ -92,7 +92,7 @@ public class DataSendAndDownload extends Activity {
         sendDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mainAct.isOnline()){
+                if(isOnline()){
                     UploadModel uploadModel=new UploadModel(getApplicationContext());
                     Toast.makeText(getApplicationContext(),"Мэдээлэл илгээлээ БАЯРЛАЛАА :D", Toast.LENGTH_SHORT).show();
                 }else
@@ -104,12 +104,13 @@ public class DataSendAndDownload extends Activity {
             @Override
             public boolean onLongClick(View view) {
 
-                pref = getSharedPreferences("download.info", Context.MODE_PRIVATE);
-                editor = pref.edit();
-                editor.putBoolean("download", true);
-                editor.apply();
-                if(mainAct.isOnline()){
-                    getCustomer();
+                if(isOnline()){
+                    pref = getSharedPreferences("download.info", Context.MODE_PRIVATE);
+                    editor = pref.edit();
+                    editor.putBoolean("download", true);
+                    editor.apply();
+                    getCustomer("api/position1/");
+                    getCustomer("api/position2/");
                     getCustomerBtn.setEnabled(false);
                     Toast.makeText(getApplicationContext(), "Өгөгдөл татаж байна", Toast.LENGTH_LONG).show();
                 }else
@@ -119,12 +120,17 @@ public class DataSendAndDownload extends Activity {
         });
     }
 
-    private void getCustomer(){
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+    private void getCustomer(String positionUrl){
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(HOST+"api/position/", new AsyncHttpResponseHandler() {
+        client.get(HOST+positionUrl, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
-                Log.d("customer", "onStart"+HOST+"api/position/");
+                Log.d("customer", "onStart"+HOST+"api/position1/");
             }
 
             @Override

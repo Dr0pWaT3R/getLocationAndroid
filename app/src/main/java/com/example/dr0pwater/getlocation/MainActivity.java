@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends Activity implements LocationListener {
-
+    final public static String HOST  = "http://192.168.1.23:8000/";
     private Typeface fontawesome;
     private LocationManager locationManager;
     private boolean providerldisabled = true,burteg_GPS = true, burteg_NETWORK = true;
@@ -287,7 +287,7 @@ public class MainActivity extends Activity implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         String msg = "New Latitude: "+location.getLatitude()+"New Longitude: "+location.getLongitude();
-        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+//        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
