@@ -444,10 +444,10 @@ public class MainActivity extends Activity implements LocationListener {
                         t1.setTypeface(fontawesome);
 //                        t1.setText(""+customerInfo.get(i-1).openif);
 //                            Log.d("position", "CreateTable: openIf->"+customerInfo.get(i-1).openif);
-                        if (customerInfo.get(i - 1).openif == 1)
-                            t1.setText(R.string.myfalse);
-                        else
+                        if (customerInfo.get(i - 1).openif == 2)
                             t1.setText(R.string.mytrue);
+                        else
+                            t1.setText(R.string.myfalse);
                     }
 
                     t1.setGravity(Gravity.CENTER);

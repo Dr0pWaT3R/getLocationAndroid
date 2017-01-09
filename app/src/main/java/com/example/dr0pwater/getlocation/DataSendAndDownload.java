@@ -111,6 +111,7 @@ public class DataSendAndDownload extends Activity {
                     editor.apply();
                     getCustomer("api/position1/");
                     getCustomer("api/position2/");
+                    getCustomer("api/position3/");
                     getCustomerBtn.setEnabled(false);
                     Toast.makeText(getApplicationContext(), "Өгөгдөл татаж байна", Toast.LENGTH_LONG).show();
                 }else
@@ -125,12 +126,12 @@ public class DataSendAndDownload extends Activity {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-    private void getCustomer(String positionUrl){
+    private void getCustomer(final String positionUrl){
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(HOST+positionUrl, new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
-                Log.d("customer", "onStart"+HOST+"api/position1/");
+                Log.d("customer", "onStart"+HOST+positionUrl);
             }
 
             @Override
@@ -159,7 +160,7 @@ public class DataSendAndDownload extends Activity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+                Toast.makeText(getApplication(), "Мэдээлэл татахад алдаа гарлаа", Toast.LENGTH_LONG).show();
             }
             @Override
             public void onRetry(int retryNo) {
