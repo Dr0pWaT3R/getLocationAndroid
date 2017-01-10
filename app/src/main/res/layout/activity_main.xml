@@ -12,6 +12,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.dr0pwater.getlocation.MainActivity">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ХАЙХ"
+        android:id="@+id/search_editText_id"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1100dp"
@@ -20,6 +26,7 @@
         <Spinner
             android:id="@+id/dynamic_spinner_city"
             android:layout_width="fill_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:background="#0d47a1"
             android:spinnerMode="dropdown"

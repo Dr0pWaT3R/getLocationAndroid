@@ -34,6 +34,7 @@ public class Customer {
             e.printStackTrace();
         }
     }
+
     public static ArrayList<Customer> fromJson (JSONArray jsonObject){
         ArrayList<Customer> customers = new ArrayList<>();
         for (int i=0; i<jsonObject.length(); i++){

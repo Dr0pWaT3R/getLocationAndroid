@@ -17,6 +17,7 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -266,6 +267,9 @@ public class MainActivity extends Activity implements LocationListener {
                 textView.setText("latitude: "+getLocation().getLatitude()+" longtitude: "+ getLocation().getLongitude());
             }
         });
+
+        final Adapter adapter = new Adapter(this, customerInfo);
+
 
         showdataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
