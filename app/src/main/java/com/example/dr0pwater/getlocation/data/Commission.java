@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Commission {
     public int id, district;
-    public String name="";
+    public String name="", boundary="";
     Commission(){}
     public Commission(JSONObject object){
         JSONObject obj;
@@ -20,6 +20,7 @@ public class Commission {
             id = object.getInt("pk");
             obj = object.getJSONObject("fields");
             name = obj.getString("name");
+            boundary = obj.getString("boundary");
             district = obj.getInt("soum");
         }catch (JSONException e){
             e.printStackTrace();

@@ -16,6 +16,7 @@ public class Commissiondb {
     public static final String table = "commission";
     public static final String _id = "id";
     public static final String _name = "name";
+    public static final String _boundary = "boundary";
     public static final String _district = "district";
 
     public Commissiondb(Database context) {
@@ -25,6 +26,7 @@ public class Commissiondb {
     static public String createtable(){
         String CREATE_BOOK_TABLE = "CREATE TABLE "+table+" ( " + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +_name+ " text,"
+                +_boundary+ " text,"
                 +_district+ " int"
                 +" ); " ;
         return CREATE_BOOK_TABLE;
@@ -38,6 +40,7 @@ public class Commissiondb {
         // make values to be inserted
         ContentValues values = new ContentValues();
         values.put(_name, commission.name);
+        values.put(_boundary, commission.boundary);
         values.put(_district, commission.district);
         values.put(_id, commission.id);
         db.insert(table, null, values);
@@ -49,15 +52,17 @@ public class Commissiondb {
         SQLiteDatabase db = myDatabase.getWritableDatabase();
         String sql = "INSERT OR REPLACE INTO "+table+" (" +
                 _name + "," +
+                _boundary + "," +
                 _district + "," +
                 _id + "" +
-                " ) VALUES ( ?,?,?)";
+                " ) VALUES ( ?,?,?,?)";
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement(sql);
         for (Commission a : commissions) {
             stmt.bindString(1, a.name);
-            stmt.bindLong(2, a.district);
-            stmt.bindLong(3, a.id);
+            stmt.bindString(2, a.boundary);
+            stmt.bindLong(3, a.district);
+            stmt.bindLong(4, a.id);
             stmt.execute();
             stmt.clearBindings();
         }
@@ -78,6 +83,7 @@ public class Commissiondb {
                 commission = new Commission();
                 commission.id = cursor.getInt(cursor.getColumnIndex(_id));
                 commission.name = cursor.getString(cursor.getColumnIndex(_name));
+                commission.boundary = cursor.getString(cursor.getColumnIndex(_boundary));
                 commission.district = cursor.getInt(cursor.getColumnIndex(_district));
                 commissions.add(commission);
             } while (cursor.moveToNext());
@@ -99,6 +105,7 @@ public class Commissiondb {
                 commission = new Commission();
                 commission.id = cursor.getInt(cursor.getColumnIndex(_id));
                 commission.name = cursor.getString(cursor.getColumnIndex(_name));
+                commission.boundary = cursor.getString(cursor.getColumnIndex(_boundary));
                 commission.district = cursor.getInt(cursor.getColumnIndex(_district));
                 commissions.add(commission);
             } while (cursor.moveToNext());

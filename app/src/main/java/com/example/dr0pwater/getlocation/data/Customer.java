@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class Customer {
     public int id,city, duureg, khoroo, type=0, openif=0;
-    public String name="", position="", phone="", outsideImage="";
+    public String name="", position="", phone="", outsideImage="", owner="";
     public Customer(){}
     public Customer(JSONObject object){
         JSONObject obj;
@@ -27,6 +27,7 @@ public class Customer {
             duureg = obj.getInt("district");
             khoroo = obj.getInt("bag_khoroo");
             name = obj.getString("name").toLowerCase();
+            owner = obj.getString("sponsor").toLowerCase();
             position = obj.getString("position");
             outsideImage = obj.getString("exitimg");
             openif = obj.getInt("openif");

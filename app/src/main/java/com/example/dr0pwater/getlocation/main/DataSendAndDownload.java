@@ -26,9 +26,13 @@ import com.example.dr0pwater.getlocation.data.Typesdb;
 import com.example.dr0pwater.getlocation.data.UpdateLocationdb;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -75,6 +79,7 @@ public class DataSendAndDownload extends Activity {
             @Override
             public void onClick(View view) {
                 btnClickCount ++;
+                asd();
                 Log.d("showdata", ":customerdbSize-> "+ customerdb.getall().size());
                 Log.d("showdata", ":updateLocationdbSize-> "+ updateLocationdb.getall().size());
                 Toast.makeText(getApplicationContext(), "Нийт харилцагч: "+customerdb.getall().size(), Toast.LENGTH_SHORT).show();
@@ -125,6 +130,7 @@ public class DataSendAndDownload extends Activity {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+    int complateCount=0;
     private void getCustomer(final String positionUrl){
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(HOST+positionUrl, new AsyncHttpResponseHandler() {
@@ -142,10 +148,11 @@ public class DataSendAndDownload extends Activity {
                     Log.d("customer", "bna"+customerts);
                     try {
                         obj = new JSONObject(customerts);
-                        if (positionUrl.endsWith("2") || positionUrl.endsWith("3")){
-                            customerdb.create( Customer.fromJson(obj.getJSONArray("position")));
+                        if (positionUrl.endsWith("position2/") || positionUrl.endsWith("position3/")){
                             Log.d("customer", "positionUrl->: "+positionUrl);
+                            customerdb.create( Customer.fromJson(obj.getJSONArray("position")));
                         }else {
+                            Log.d("customer", "positionUrl->: "+positionUrl);
                             customerdb.create( Customer.fromJson(obj.getJSONArray("position")));
                             citydb.create(City.fromJson(obj.getJSONArray("city")));
                             districtdb.create(District.fromJson(obj.getJSONArray("dvvreg")));
@@ -168,6 +175,60 @@ public class DataSendAndDownload extends Activity {
             @Override
             public void onRetry(int retryNo) {
                 // called when request is retried
+            }
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                // Progress notification
+            }
+
+            @Override
+            public void onFinish() {
+                // Completed the request (either success or failure)
+                Log.d("customer", "onFinish: ");
+                complateCount++;
+                if (complateCount==3)
+                    asd();
+            }
+        });
+    }
+
+    int nextImg=0;
+    AsyncHttpClient client = new AsyncHttpClient();
+    public void asd(){
+        ArrayList<Customer> customerOutsideImage = customerdb.getCustomerOutsideImage();
+        Log.d("downloadImg", "cusImageSize->: "+customerOutsideImage.size());
+        for (int i=0; i<10; i++)
+        {
+            if (customerOutsideImage.get(i).outsideImage != "")
+                lol(customerOutsideImage.get(i).outsideImage);
+        }
+
+    }
+    public void lol(final String lolUrl){
+        complateCount=0;
+        client.get("http://sales.smarts.mn/media/"+lolUrl, new FileAsyncHttpResponseHandler(this) {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, File response) {
+                // Do something with the file `response`
+                Log.d("downloadImg", "onSuccess: "+"http://sales.smarts.mn/media/"+lolUrl+"->"+response);
+            }
+            @Override
+            public void onProgress(long bytesWritten, long totalSize) {
+                // Progress notification
+            }
+
+            @Override
+            public void onFinish() {
+                // Completed the request (either success or failure)
+                Log.d("customer", "onFinish: ");
+                complateCount++;
+                if (complateCount==10)
+                    nextImg++;
             }
         });
     }
