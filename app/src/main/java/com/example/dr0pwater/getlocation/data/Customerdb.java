@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.text.Editable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class Customerdb {
     public static final String _khoroo = "khoroo";
     public static final String _name = "name";
     public static final String _position = "position";
+    public static final String _outsideImage = "outsideImage";
     public static final String _type = "type";
     public static final String _phone = "phone";
     public static final String _openif = "openif";
@@ -36,6 +38,7 @@ public class Customerdb {
                 +_khoroo+ " int,"
                 +_name+ " text,"
                 +_position+ " text,"
+                +_outsideImage+ " text,"
                 +_type+ " int,"
                 +_phone+ " text,"
                 +_openif+ " int"
@@ -56,6 +59,7 @@ public class Customerdb {
         values.put(_khoroo, cusp.khoroo);
         values.put(_name, cusp.name);
         values.put(_position, cusp.position);
+        values.put(_outsideImage, cusp.outsideImage);
         values.put(_type, cusp.type);
         values.put(_phone, cusp.phone);
         values.put(_openif, cusp.openif);
@@ -73,11 +77,12 @@ public class Customerdb {
                 _khoroo + "," +
                 _name + "," +
                 _position + "," +
+                _outsideImage + "," +
                 _type + "," +
                 _phone + "," +
                 _openif+ "," +
                 _id + "" +
-                " ) VALUES ( ?,?,?,?,?,?,?,?,?)";
+                " ) VALUES ( ?,?,?,?,?,?,?,?,?,?)";
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement(sql);
         for (Customer a : customers) {
@@ -86,10 +91,11 @@ public class Customerdb {
             stmt.bindLong(3, a.khoroo);
             stmt.bindString(4, a.name);
             stmt.bindString(5, a.position);
-            stmt.bindLong(6, a.type);
-            stmt.bindString(7, a.phone);
-            stmt.bindLong(8, a.openif);
-            stmt.bindLong(9, a.id);
+            stmt.bindString(6, a.outsideImage);
+            stmt.bindLong(7, a.type);
+            stmt.bindString(8, a.phone);
+            stmt.bindLong(9, a.openif);
+            stmt.bindLong(10, a.id);
             stmt.execute();
             stmt.clearBindings();
         }
@@ -116,6 +122,7 @@ public class Customerdb {
                 customer.khoroo = cursor.getInt(cursor.getColumnIndex(_khoroo));
                 customer.name = cursor.getString(cursor.getColumnIndex(_name));
                 customer.position = cursor.getString(cursor.getColumnIndex(_position));
+                customer.outsideImage = cursor.getString(cursor.getColumnIndex(_outsideImage));
                 customer.phone = cursor.getString(cursor.getColumnIndex(_phone));
                 customer.type = cursor.getInt(cursor.getColumnIndex(_type));
                 customer.openif = cursor.getInt(cursor.getColumnIndex(_openif));
@@ -144,6 +151,7 @@ public class Customerdb {
                 customer.khoroo = cursor.getInt(cursor.getColumnIndex(_khoroo));
                 customer.name = cursor.getString(cursor.getColumnIndex(_name));
                 customer.position = cursor.getString(cursor.getColumnIndex(_position));
+                customer.outsideImage = cursor.getString(cursor.getColumnIndex(_outsideImage));
                 customer.phone = cursor.getString(cursor.getColumnIndex(_phone));
                 customer.type = cursor.getInt(cursor.getColumnIndex(_type));
                 customer.openif = cursor.getInt(cursor.getColumnIndex(_openif));
@@ -171,6 +179,7 @@ public class Customerdb {
                 customer.khoroo = cursor.getInt(cursor.getColumnIndex(_khoroo));
                 customer.name = cursor.getString(cursor.getColumnIndex(_name));
                 customer.position = cursor.getString(cursor.getColumnIndex(_position));
+                customer.outsideImage = cursor.getString(cursor.getColumnIndex(_outsideImage));
                 customer.type = cursor.getInt(cursor.getColumnIndex(_type));
                 customer.phone = cursor.getString(cursor.getColumnIndex(_phone));
                 customers.add(customer);
@@ -208,7 +217,6 @@ public class Customerdb {
         Customer customer = null;
         if (cursor.moveToFirst()) {
             do {
-
                 customer = new Customer();
                 customer.duureg = cursor.getInt(cursor.getColumnIndex(_duureg));
                 customers.add(customer);
@@ -232,5 +240,54 @@ public class Customerdb {
         SQLiteDatabase db = myDatabase.getWritableDatabase();
         db.execSQL("delete from " + table);
         db.close();
+    }
+
+    public ArrayList<Customer> searchAny(int districtId, int commissionId, Editable text) {
+        ArrayList<Customer> customers = new ArrayList<>();
+
+        String query = "SELECT  * FROM " + table+ " where duureg="+districtId+ " and khoroo="+commissionId +" and name like '%"+text+"%'";
+        Log.d("query", "getCustomerInfoSearch: "+query);
+        SQLiteDatabase db = myDatabase.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Customer customer = null;
+        if (cursor.moveToFirst()) {
+            do {
+
+                customer = new Customer();
+                customer.id = cursor.getInt(cursor.getColumnIndex(_id));
+                customer.city = cursor.getInt(cursor.getColumnIndex(_city));
+                customer.duureg = cursor.getInt(cursor.getColumnIndex(_duureg));
+                customer.khoroo = cursor.getInt(cursor.getColumnIndex(_khoroo));
+                customer.name = cursor.getString(cursor.getColumnIndex(_name));
+                customer.position = cursor.getString(cursor.getColumnIndex(_position));
+                customer.outsideImage = cursor.getString(cursor.getColumnIndex(_outsideImage));
+                customer.phone = cursor.getString(cursor.getColumnIndex(_phone));
+                customer.type = cursor.getInt(cursor.getColumnIndex(_type));
+                customer.openif = cursor.getInt(cursor.getColumnIndex(_openif));
+                customers.add(customer);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return customers;
+    }
+
+    public ArrayList<Customer> getCustomerOutsideImage() {
+        ArrayList<Customer> customers = new ArrayList<>();
+
+        String query = "SELECT  * FROM " + table +" limit 10";
+        SQLiteDatabase db = myDatabase.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        Customer customer = null;
+        if (cursor.moveToFirst()) {
+            do {
+                customer = new Customer();
+                customer.outsideImage = cursor.getString(cursor.getColumnIndex(_outsideImage));
+                customers.add(customer);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return customers;
     }
 }

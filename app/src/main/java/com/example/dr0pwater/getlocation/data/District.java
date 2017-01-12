@@ -20,7 +20,7 @@ public class District {
             id = object.getInt("pk");
             obj = object.getJSONObject("fields");
             name = obj.getString("name");
-            city = obj.getInt("aimag");
+            city = obj.getInt("aim");
         }catch (JSONException e){
             e.printStackTrace();
         }

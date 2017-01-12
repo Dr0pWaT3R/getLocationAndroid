@@ -1,4 +1,4 @@
-package com.example.dr0pwater.getlocation;
+package com.example.dr0pwater.getlocation.main;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,40 +18,42 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dr0pwater.getlocation.data.City;
+
+import com.example.dr0pwater.getlocation.R;
 import com.example.dr0pwater.getlocation.data.Citydb;
 import com.example.dr0pwater.getlocation.data.Commission;
 import com.example.dr0pwater.getlocation.data.Commissiondb;
 import com.example.dr0pwater.getlocation.data.Customer;
 import com.example.dr0pwater.getlocation.data.Customerdb;
 import com.example.dr0pwater.getlocation.data.Database;
-import com.example.dr0pwater.getlocation.data.District;
 import com.example.dr0pwater.getlocation.data.Districtdb;
 import com.example.dr0pwater.getlocation.data.Types;
 import com.example.dr0pwater.getlocation.data.Typesdb;
 import com.example.dr0pwater.getlocation.data.UpdateLocationdb;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-
-import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends Activity implements LocationListener {
     final public static String HOST  = "http://192.168.1.23:8000/";
@@ -76,6 +78,8 @@ public class MainActivity extends Activity implements LocationListener {
     private String changedDistrict="", changedCommission="", changeTypes="";
     private int districtId=0, commissionId=0, typesId=0;
     Spinner dynamicSpinner_commission, dynamicSpinner_types;
+    ListView lv;
+    ArrayAdapter<Customer> adapter;
 
     public void getCity() {
         customer = customerdb.getCity();
@@ -120,10 +124,13 @@ public class MainActivity extends Activity implements LocationListener {
         String[] items = new String[customer.size()];
 
         if(customer.size()>0){
-            Log.d("duureg", "cuspoint: "+ customer.size());
+            Log.d("duureg", "cuspoint: "+ customer.get(0).duureg);
             for(int i = 0; i< customer.size(); i++){
 //                String districtName = districtdb.getDistrictName(customer.get(i).duureg);
-                items[i] = districtdb.getDistrictName(customer.get(i).duureg);
+                if (districtdb.getDistrictName(customer.get(i).duureg) != "")
+                    items[i] = districtdb.getDistrictName(customer.get(i).duureg);
+                else
+                    items[i] = "Хороо сонгох";
             }
         }
 
@@ -140,6 +147,7 @@ public class MainActivity extends Activity implements LocationListener {
                 Log.v("item", (String) parent.getItemAtPosition(position));
                 changedDistrict = String.valueOf(parent.getItemAtPosition(position));
                 districtId = districtdb.getDistrictId(changedDistrict);
+                table.removeAllViews();
                 getKhoroo();
 //                    Toast.makeText(getApplicationContext(), "duureg id: "+districtId, Toast.LENGTH_LONG).show();
 
@@ -185,6 +193,7 @@ public class MainActivity extends Activity implements LocationListener {
                 }
                 customerInfo = customerdb.getCustomerInfo(districtId,commissionId);
 //                Toast.makeText(getApplicationContext(),""+districtId+ "commis:"+ commissionId+"cusInfoSize:"+customerInfo.size(),Toast.LENGTH_LONG).show();
+                table.removeAllViews();
                 CreateTable();
 
             }
@@ -198,11 +207,12 @@ public class MainActivity extends Activity implements LocationListener {
     public void getTypes(){
         types = typesdb.getall();
         dynamicSpinner_types = (Spinner) findViewById(R.id.dynamic_spinner_types);
-        String[] items = new String[types.size()];
+        String[] items = new String[types.size()+1];
 
         if(types.size()>0){
             for(int i = 0; i< types.size(); i++){
-                items[i] = types.get(i).name;
+                items[0] = "Төрөл сонгох";
+                items[i+1] = types.get(i).name;
             }
         }
 
@@ -215,7 +225,7 @@ public class MainActivity extends Activity implements LocationListener {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                Log.v("item", (String) parent.getItemAtPosition(position));
+//                Log.v("item", (String) parent.getItemAtPosition(position));
                 changeTypes = (String)parent.getItemAtPosition(position);
                 for(int i=0; i<types.size(); i++){
                     if(types.get(i).name == changeTypes){
@@ -224,6 +234,7 @@ public class MainActivity extends Activity implements LocationListener {
                 }
                 customerInfo = customerdb.getCustomerInfoWithType(districtId,commissionId, typesId);
                 Log.d("query", "districtId:->" + districtId+"commissionId->"+commissionId+"typesId->"+typesId);
+                table.removeAllViews();
                 CreateTable();
 
             }
@@ -268,7 +279,45 @@ public class MainActivity extends Activity implements LocationListener {
             }
         });
 
-        final Adapter adapter = new Adapter(this, customerInfo);
+        final EditText searchTxt = (EditText)findViewById(R.id.search_editText_id);
+        searchTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                customerInfo=customerdb.searchAny(districtId, commissionId, searchTxt.getText());
+                CreateTable();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+//        adapter = new ArrayAdapter<Customer>(
+//                MainActivity.this,
+//                android.R.layout.simple_list_item_1,
+//                customerInfo);
+//        lv.setAdapter(adapter);
+//        SearchView srchText = (SearchView) findViewById(R.id.search_searchView_id);
+//
+//        final Adapter adapter = new Adapter(this, customerInfo);
+//        lv.setAdapter(adapter);
+//        srchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                adapter.getFilter().filter(newText);
+//                return false;
+//            }
+//        });
 
 
         showdataBtn.setOnClickListener(new View.OnClickListener() {
@@ -280,13 +329,13 @@ public class MainActivity extends Activity implements LocationListener {
 //                Log.d("showdata", ":citydbSize-> "+ citydb.getall().size());
 //                Log.d("showdata", ":districtdbSize:-> "+ districtdb.getall().size());
 //                Log.d("showdata", ":commissiondbSize-> "+ commissiondb.getall().size());
-//                Log.d("showdata", ":commissionDistrict-> "+ commissiondb.getall().get(0).district);
 //                Log.d("showdata", ":typesdbSize-> "+ typesdb.getall().size());
 //                Log.d("showdata", ":updateLocationdbSize-> "+ updateLocationdb.getall().size());
             }
         });
 
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -433,7 +482,7 @@ public class MainActivity extends Activity implements LocationListener {
                 }
                 else{
                     if(j==0){
-                        t1.setText(""+customerInfo.get(i-1).name);
+                        t1.setText(""+ StringUtils.capitalize(customerInfo.get(i-1).name));
                     }
                     else if(j==1 ) {
                         if (customerInfo.get(i - 1).position.equals("0,0")) {

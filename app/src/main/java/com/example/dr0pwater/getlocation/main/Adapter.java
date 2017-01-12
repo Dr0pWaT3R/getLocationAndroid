@@ -1,4 +1,4 @@
-package com.example.dr0pwater.getlocation;
+package com.example.dr0pwater.getlocation.main;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TableLayout;
 
+import com.example.dr0pwater.getlocation.R;
 import com.example.dr0pwater.getlocation.data.Customer;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class Adapter extends BaseAdapter implements Filterable {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null){
-            convertView = inflater.inflate(R.layout.activity_main, null);
+            convertView = inflater.inflate(R.layout.model, null);
         }
         table = (TableLayout)convertView.findViewById(R.id.table_customer);
 

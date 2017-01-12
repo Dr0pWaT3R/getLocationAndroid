@@ -2,6 +2,8 @@ package com.example.dr0pwater.getlocation.data;
 
 import android.util.Log;
 
+import com.example.dr0pwater.getlocation.main.DataSendAndDownload;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,25 +15,30 @@ import java.util.ArrayList;
  */
 
 public class Customer {
-    public int id,city, duureg, khoroo, type, openif;
-    public String name="", position="", phone="";
+    public int id,city, duureg, khoroo, type=0, openif=0;
+    public String name="", position="", phone="", outsideImage="";
     public Customer(){}
     public Customer(JSONObject object){
         JSONObject obj;
         try{
             id = object.getInt("pk");
             obj = object.getJSONObject("fields");
-            city = obj.getInt("city");
-            duureg = obj.getInt("dvvreg");
-            khoroo = obj.getInt("khoroo");
-            name = obj.getString("name");
+            city = obj.getInt("aimag");
+            duureg = obj.getInt("district");
+            khoroo = obj.getInt("bag_khoroo");
+            name = obj.getString("name").toLowerCase();
             position = obj.getString("position");
-            phone = obj.getString("phone");
-            type = obj.getInt("types");
+            outsideImage = obj.getString("exitimg");
             openif = obj.getInt("openif");
-//            Log.d("pleaseType", "Customer: "+openif);
+            try {
+                type = obj.getInt("types");
+            }catch (Exception e ){}
+            phone = obj.getString("phone");
+//            Log.d("customer", "Customer: "+obj.getString("exitimg"));
+
         }catch (JSONException e){
             e.printStackTrace();
+            Log.d("customer", "error: ");
         }
     }
 

@@ -20,7 +20,7 @@ public class Commission {
             id = object.getInt("pk");
             obj = object.getJSONObject("fields");
             name = obj.getString("name");
-            district = obj.getInt("dvvreg");
+            district = obj.getInt("soum");
         }catch (JSONException e){
             e.printStackTrace();
         }

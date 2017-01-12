@@ -1,4 +1,4 @@
-package com.example.dr0pwater.getlocation;
+package com.example.dr0pwater.getlocation.main;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -14,8 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
