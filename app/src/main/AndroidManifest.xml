@@ -27,6 +27,7 @@
         </activity>
         <activity android:name=".main.DataSendAndDownload" />
         <activity android:name=".main.LoginActivity" />
+        <activity android:name=".main.Activity_update"></activity>
     </application>
 
 </manifest>

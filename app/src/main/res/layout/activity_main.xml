@@ -15,6 +15,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:drawableRight="@drawable/font_awesome_search_25_0_ffffff_none"
         android:hint="ХАЙХ"
         android:id="@+id/search_editText_id"/>
 

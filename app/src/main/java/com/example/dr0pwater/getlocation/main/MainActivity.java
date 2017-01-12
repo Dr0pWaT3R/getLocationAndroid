@@ -520,24 +520,49 @@ public class MainActivity extends Activity implements LocationListener {
     private View.OnClickListener rowclick =new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            int i = (int)view.getTag();
-            if(customerInfo.get(i-1).position.equals("0,0") || customerInfo.get(i-1).position.equals("0.0,0.0")) {
-
-                if(getLocation() != null){
-                    String latLong = getLocation().getLatitude()+ "," + getLocation().getLongitude();
-                    Log.d("sdaaa", "onClick: "+customerInfo.get(i - 1).id+"latlong:"+latLong);
-                    updateLocationdb.insertPosition(customerInfo.get(i - 1).id,latLong);
-                    customerdb.updatePosition(customerInfo.get(i - 1).id, latLong);
-                    customerInfo = customerdb.getCustomerInfo(districtId,commissionId);
-                    CreateTable();
-                    Log.d("showdata", ":updateLocationdbSize-> " + updateLocationdb.getall().size());
-                    Toast.makeText(getApplicationContext(), "Цэгийн мэдээлэл авлаа" + latLong, Toast.LENGTH_LONG).show();
-                } else{
-                    Toast.makeText(getApplicationContext(), "Цэг авах боломжгүй байна. Дахин оролдоно уу?", Toast.LENGTH_SHORT).show();
+            final int i = (int)view.getTag();
+            final android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(MainActivity.this);
+            final View mView = getLayoutInflater().inflate(R.layout.model, null);
+            alertDialogBuilder.setView(mView);
+            final android.app.AlertDialog dialogAsk = alertDialogBuilder.create();
+            dialogAsk.show();
+            TextView customerName = (TextView)mView.findViewById(R.id.customer_name_id);
+            customerName.setText(customerInfo.get(i-1).name);
+            Button updateBtn = (Button)mView.findViewById(R.id.update_btn_id);
+            updateBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getBaseContext(), Activity_update.class);
+                    intent.putExtra("customer",customerInfo.get(i-1).id);
+                    startActivity(intent);
+                    dialogAsk.dismiss();
                 }
-            }
-            else
-                Toast.makeText(getApplicationContext(),"Цэгийн мэдээлэл авсан байна",Toast.LENGTH_LONG).show();
+            });
+            Button locationGetBtn = (Button)mView.findViewById(R.id.locationGet_btn_id);
+            locationGetBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(customerInfo.get(i-1).position.equals("0,0") || customerInfo.get(i-1).position.equals("0.0,0.0")) {
+
+                        if(getLocation() != null){
+                            String latLong = getLocation().getLatitude()+ "," + getLocation().getLongitude();
+                            Log.d("sdaaa", "onClick: "+customerInfo.get(i - 1).id+"latlong:"+latLong);
+                            updateLocationdb.insertPosition(customerInfo.get(i - 1).id,latLong);
+                            customerdb.updatePosition(customerInfo.get(i - 1).id, latLong);
+                            customerInfo = customerdb.getCustomerInfo(districtId,commissionId);
+                            CreateTable();
+                            Log.d("showdata", ":updateLocationdbSize-> " + updateLocationdb.getall().size());
+                            Toast.makeText(getApplicationContext(), "Цэгийн мэдээлэл авлаа" + latLong, Toast.LENGTH_LONG).show();
+                        } else{
+                            Toast.makeText(getApplicationContext(), "Цэг авах боломжгүй байна. Дахин оролдоно уу?", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else
+                        Toast.makeText(getApplicationContext(),"Цэгийн мэдээлэл авсан байна",Toast.LENGTH_LONG).show();
+
+                    dialogAsk.dismiss();
+                }
+            });
         }
     };
 
