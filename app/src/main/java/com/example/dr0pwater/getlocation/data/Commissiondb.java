@@ -133,4 +133,19 @@ public class Commissiondb {
         db.execSQL("delete from " + table);
         db.close();
     }
+
+    public int getDistrictId(int commission) {
+        String query = "SELECT district FROM `commission` WHERE id='"+ commission+ "'";
+        int districtId=0;
+        SQLiteDatabase db = myDatabase.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                districtId = cursor.getInt(cursor.getColumnIndex(_district));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return districtId;
+    }
 }

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,7 +39,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class DataSendAndDownload extends Activity {
 
-    final public static String HOST = "http://sales.smarts.mn/";
+    final public static String HOST = "http://192.168.1.9:8000/";
     private Database database;
     private Customerdb customerdb;
     private UpdateLocationdb updateLocationdb;
@@ -79,7 +80,6 @@ public class DataSendAndDownload extends Activity {
             @Override
             public void onClick(View view) {
                 btnClickCount ++;
-                asd();
                 Log.d("showdata", ":customerdbSize-> "+ customerdb.getall().size());
                 Log.d("showdata", ":updateLocationdbSize-> "+ updateLocationdb.getall().size());
                 Toast.makeText(getApplicationContext(), "Нийт харилцагч: "+customerdb.getall().size(), Toast.LENGTH_SHORT).show();
@@ -215,7 +215,13 @@ public class DataSendAndDownload extends Activity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, File response) {
                 // Do something with the file `response`
+
                 Log.d("downloadImg", "onSuccess: "+"http://sales.smarts.mn/media/"+lolUrl+"->"+response);
+                File filePath = Environment.getExternalStorageDirectory();
+                File directoty = new File(filePath.getAbsolutePath() + "/Save Image Example");
+                directoty.mkdirs();
+                File image = response;
+                File file = new File(directoty, String.valueOf(image));
             }
             @Override
             public void onProgress(long bytesWritten, long totalSize) {

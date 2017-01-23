@@ -1,0 +1,218 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".main.MainActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:orientation="vertical"
+        android:id="@+id/headcolor"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="#ffff"
+             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="хаягийн мэдээлэл"
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="#ffff"
+            android:id="@+id/textView3" />
+
+
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView2">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="30dp"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:weightSum="2"
+                    android:layout_margin="16dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="fill_parent">
+                    <TextView android:text="аймаг, хот"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="0dp"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:gravity="center_vertical"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/aimaghot"
+                        android:layout_gravity="center_vertical" />
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:weightSum="2"
+                    android:layout_margin="16dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="fill_parent">
+                    <TextView android:text="сум, дүүрэг"
+                        android:layout_marginLeft="20dp"
+                        android:gravity="center_vertical"
+                        android:layout_width="0dp"
+
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/sumduureg"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:weightSum="2"
+                    android:layout_margin="16dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="fill_parent">
+                    <TextView android:text="баг хороо"
+                        android:layout_width="0dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/baghoroo"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:weightSum="2"
+                    android:layout_margin="16dp"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+                    android:layout_height="fill_parent">
+                    <TextView android:text="хороолол"
+                        android:layout_width="0dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/horoolol"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:weightSum="2"
+                    android:layout_margin="16dp"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"
+                    android:layout_height="fill_parent">
+                    <TextView android:text="байр"
+                        android:layout_width="0dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/bair"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:weightSum="2"
+                    android:visibility="gone"
+                    android:layout_margin="16dp"
+                    android:gravity="center_vertical"
+                    android:layout_height="fill_parent">
+                    <TextView android:text="тоот"
+                        android:layout_width="0dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content" />
+                    <Spinner
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/toot"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/definition"
+                android:textStyle="bold"
+                android:textColor="#ffff"
+                android:layout_marginBottom="50dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Бид судлаачийн ажлыг хянах зорилгоор таны яриаг бичиж үлдээх бөгөөд таны мэдээлэл монгол улсын &quot;хувь хүний тухай хуулиар&quot;бүрэн хамгаалагдах болно"
+                android:textStyle="bold"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="#ffff"
+                android:id="@+id/huuli" />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

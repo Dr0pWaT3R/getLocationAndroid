@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
@@ -31,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -40,18 +42,22 @@ import android.widget.Toast;
 
 
 import com.example.dr0pwater.getlocation.R;
+import com.example.dr0pwater.getlocation.data.City;
 import com.example.dr0pwater.getlocation.data.Citydb;
 import com.example.dr0pwater.getlocation.data.Commission;
 import com.example.dr0pwater.getlocation.data.Commissiondb;
 import com.example.dr0pwater.getlocation.data.Customer;
 import com.example.dr0pwater.getlocation.data.Customerdb;
 import com.example.dr0pwater.getlocation.data.Database;
+import com.example.dr0pwater.getlocation.data.District;
 import com.example.dr0pwater.getlocation.data.Districtdb;
 import com.example.dr0pwater.getlocation.data.Types;
 import com.example.dr0pwater.getlocation.data.Typesdb;
 import com.example.dr0pwater.getlocation.data.UpdateLocationdb;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -71,44 +77,51 @@ public class MainActivity extends Activity implements LocationListener {
     private Typesdb typesdb;
     private UpdateLocationdb updateLocationdb;
     private ArrayList<Customer> customer;
-    private ArrayList<Commission> commission;
-    private ArrayList<Types> types;
     private ArrayList<Customer> customerInfo;
-    private boolean districtChanged = false, commissionChanged = false;
-    private String changedDistrict="", changedCommission="", changeTypes="";
-    private int districtId=0, commissionId=0, typesId=0;
-    Spinner dynamicSpinner_commission, dynamicSpinner_types;
+
+    private String changedCity="", changedDistrict="", changedCommission="", changeTypes="";
     ListView lv;
     ArrayAdapter<Customer> adapter;
 
-    public void getCity() {
-        customer = customerdb.getCity();
-        Spinner dynamicSpinner = (Spinner) findViewById(R.id.dynamic_spinner_city);
-        String[] items = new String[customer.size()];
+    private ArrayList<City> city;
+    private int city_id;
+    private ArrayList<District> district;
+    private int district_id;
+    private ArrayList<Commission> commission;
+    private int commission_id;
+    private ArrayList<Types> types;
+    private int types_id;
 
-        if(customer.size()>0){
-            Log.d("log", "cuspoint: "+ customer.get(0).city);
-            for(int i = 0; i< customer.size(); i++){
-                if(customer.get(i).city == 1)
-                    items[i] = "Улаанбаатар";
-                else
-                    items[i] = "Хот сонгох";
+    Spinner dynamicSpinner_city, dynamicSpinner_district,dynamicSpinner_commission, dynamicSpinner_types;
+
+    public void getCity() {
+        city = citydb.getall();
+        dynamicSpinner_city = (Spinner) findViewById(R.id.dynamic_spinner_city);
+        String[] items = new String[city.size()];
+
+        if(city.size()>0){
+            for(int i = 0; i< city.size(); i++){
+                items[i] = city.get(i).name;
             }
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, items);
 
-        dynamicSpinner.setAdapter(adapter);
+        dynamicSpinner_city.setAdapter(adapter);
 
-
-        dynamicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        dynamicSpinner_city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
-                parent.getItemAtPosition(position);
-
+                changedCity = String.valueOf(parent.getItemAtPosition(position));
+                for(int i=0; i<city.size(); i++){
+                    if(city.get(i).name.equals(changedCity) ) {
+                        city_id = city.get(i).id;
+                    }
+                }
+//                getDuureg();
             }
 
             @Override
@@ -119,37 +132,44 @@ public class MainActivity extends Activity implements LocationListener {
 
     }
     public void getDuureg() {
-        customer = customerdb.getDuureg();
-        Spinner dynamicSpinner = (Spinner) findViewById(R.id.dynamic_spinner_duureg);
-        String[] items = new String[customer.size()];
+        district = districtdb.getDistrict(city_id);
+        dynamicSpinner_district = (Spinner) findViewById(R.id.dynamic_spinner_duureg);
+        String[] items = new String[district.size()];
 
-        if(customer.size()>0){
-            Log.d("duureg", "cuspoint: "+ customer.get(0).duureg);
-            for(int i = 0; i< customer.size(); i++){
-//                String districtName = districtdb.getDistrictName(customer.get(i).duureg);
-                if (districtdb.getDistrictName(customer.get(i).duureg) != "")
-                    items[i] = districtdb.getDistrictName(customer.get(i).duureg);
-                else
-                    items[i] = "Хороо сонгох";
+        if(district.size()>0){
+            for(int i = 0; i< district.size(); i++){
+                items[i] = district.get(i).name;
             }
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, items);
 
-        dynamicSpinner.setAdapter(adapter);
+        dynamicSpinner_district.setAdapter(adapter);
 
+        int setPosition=0;
+        for(int i=0; i<district.size(); i++){
+            if(district.get(i).id == district_id ) {
+                setPosition = adapter.getPosition(district.get(i).name);
+            }
+        }
+        dynamicSpinner_commission.setSelection(setPosition);
 
-        dynamicSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        dynamicSpinner_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
-                changedDistrict = String.valueOf(parent.getItemAtPosition(position));
-                districtId = districtdb.getDistrictId(changedDistrict);
-                table.removeAllViews();
-                getKhoroo();
 //                    Toast.makeText(getApplicationContext(), "duureg id: "+districtId, Toast.LENGTH_LONG).show();
+                changedDistrict = (String)parent.getItemAtPosition(position);
+                Log.d("query", "onItemSelected: "+changedDistrict);
+//                district_id=districtdb.getDistrictId(changedDistrict);
+                for(int i=0; i<district.size(); i++){
+                    if(district.get(i).name.equals(changedDistrict) ) {
+                        district_id = district.get(i).id;
+                    }
+                }
+//                getKhoroo();
 
             }
 
@@ -159,8 +179,8 @@ public class MainActivity extends Activity implements LocationListener {
             }
         });
     }
-    public void getKhoroo(){
-        commission = commissiondb.getCommission(districtId);
+    public void getKhoroo(int currentCommission){
+        commission = commissiondb.getCommission(district_id);
         dynamicSpinner_commission = (Spinner) findViewById(R.id.dynamic_spinner_khoroo);
 //        dynamicSpinner_commission.setEnabled(false);
         final String[] commissionItems = new String[commission.size()];
@@ -177,21 +197,31 @@ public class MainActivity extends Activity implements LocationListener {
 
         dynamicSpinner_commission.setAdapter(adapter);
 
+        int setPosition=0;
+        for(int i=0; i<commission.size(); i++){
+            if(commission.get(i).id == currentCommission ) {
+                setPosition = adapter.getPosition(commission.get(i).name);
+                Log.d("lol", "getKhoroo: "+commission.get(i).id+"<-curr->"+currentCommission+"->"+district_id);
+            }
+        }
+        Log.d("lol", "getKhoroo: setPosition-> "+setPosition);
+        dynamicSpinner_commission.setSelection(setPosition);
+
         dynamicSpinner_commission.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
-
-                changedCommission = (String)parent.getItemAtPosition(position);
-                Log.d("query", "onItemSelected: "+changedCommission);
-                for(int i=0; i<commission.size(); i++){
-                    if(commission.get(i).name == changedCommission) {
-                        commissionId = commission.get(i).id;
-                        Log.d("query", "getCommissionID: " + commission.get(i).id+"commissionId"+commissionId);
-                    }
-                }
-                customerInfo = customerdb.getCustomerInfo(districtId,commissionId);
+                getDuureg();
+//                changedCommission = (String)parent.getItemAtPosition(position);
+//                Log.d("query", "onItemSelected: "+changedCommission);
+//                for(int i=0; i<commission.size(); i++){
+//                    if(commission.get(i).name.equals(changedCommission) ) {
+//                        commission_id = commission.get(i).id;
+//                        Log.d("query", "getCommissionID: " + commission.get(i).id+"commissionId"+commission_id);
+//                    }
+//                }
+                customerInfo = customerdb.getCustomerInfo(district_id,commission_id);
 //                Toast.makeText(getApplicationContext(),""+districtId+ "commis:"+ commissionId+"cusInfoSize:"+customerInfo.size(),Toast.LENGTH_LONG).show();
                 table.removeAllViews();
                 CreateTable();
@@ -207,12 +237,11 @@ public class MainActivity extends Activity implements LocationListener {
     public void getTypes(){
         types = typesdb.getall();
         dynamicSpinner_types = (Spinner) findViewById(R.id.dynamic_spinner_types);
-        String[] items = new String[types.size()+1];
+        String[] items = new String[types.size()];
 
         if(types.size()>0){
             for(int i = 0; i< types.size(); i++){
-                items[0] = "Төрөл сонгох";
-                items[i+1] = types.get(i).name;
+                items[i] = types.get(i).name;
             }
         }
 
@@ -229,11 +258,11 @@ public class MainActivity extends Activity implements LocationListener {
                 changeTypes = (String)parent.getItemAtPosition(position);
                 for(int i=0; i<types.size(); i++){
                     if(types.get(i).name == changeTypes){
-                        typesId = types.get(i).id;
+                        types_id = types.get(i).id;
                     }
                 }
-                customerInfo = customerdb.getCustomerInfoWithType(districtId,commissionId, typesId);
-                Log.d("query", "districtId:->" + districtId+"commissionId->"+commissionId+"typesId->"+typesId);
+                customerInfo = customerdb.getCustomerInfoWithType(district_id,commission_id, types_id);
+                Log.d("query", "districtId:->" + district_id+"commissionId->"+commission_id+"typesId->"+types_id);
                 table.removeAllViews();
                 CreateTable();
 
@@ -248,10 +277,12 @@ public class MainActivity extends Activity implements LocationListener {
 
     public void update(){
         getCity();
-        getDuureg();
-        getKhoroo();
         getTypes();
-
+        if (CheckBoundaryInside() != 0){
+            district_id = commissiondb.getDistrictId(CheckBoundaryInside());
+            commission_id = CheckBoundaryInside();
+            getKhoroo(CheckBoundaryInside());
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,6 +303,7 @@ public class MainActivity extends Activity implements LocationListener {
         table = (TableLayout)this.findViewById(R.id.table_customer);
         fontawesome =  Typeface.createFromAsset(this.getAssets(), "fontawesome-webfont.ttf");
         update();
+
         getLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -288,13 +320,22 @@ public class MainActivity extends Activity implements LocationListener {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                customerInfo=customerdb.searchAny(districtId, commissionId, searchTxt.getText());
+                customerInfo=customerdb.searchAny(district_id, commission_id, searchTxt.getText());
                 CreateTable();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        ImageButton addCustomer = (ImageButton)findViewById(R.id.customer_add_id);
+        addCustomer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), RegisterCustomer.class);
+                startActivity(intent);
             }
         });
 //        adapter = new ArrayAdapter<Customer>(
@@ -319,7 +360,6 @@ public class MainActivity extends Activity implements LocationListener {
 //            }
 //        });
 
-
         showdataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -335,7 +375,6 @@ public class MainActivity extends Activity implements LocationListener {
         });
 
     }
-
 
     @Override
     public void onLocationChanged(Location location) {
@@ -549,7 +588,7 @@ public class MainActivity extends Activity implements LocationListener {
                             Log.d("sdaaa", "onClick: "+customerInfo.get(i - 1).id+"latlong:"+latLong);
                             updateLocationdb.insertPosition(customerInfo.get(i - 1).id,latLong);
                             customerdb.updatePosition(customerInfo.get(i - 1).id, latLong);
-                            customerInfo = customerdb.getCustomerInfo(districtId,commissionId);
+                            customerInfo = customerdb.getCustomerInfo(district_id,commission_id);
                             CreateTable();
                             Log.d("showdata", ":updateLocationdbSize-> " + updateLocationdb.getall().size());
                             Toast.makeText(getApplicationContext(), "Цэгийн мэдээлэл авлаа" + latLong, Toast.LENGTH_LONG).show();
@@ -565,5 +604,245 @@ public class MainActivity extends Activity implements LocationListener {
             });
         }
     };
+
+    private ArrayAdapter<String> sumAdapter,bagadapter,cityadapter;
+    public static String AIMAG_CITY_CODE="", SUM_DUUREG_CODE="";
+    public static int BAG_HOROO_CODE=0;
+    int pos1=-1,pos2=-1,pos3=-1;
+    public static double PI = 3.14159265;
+    public static double TWOPI = 2*PI;
+
+    private void toirog_aimag(){
+        dynamicSpinner_city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                AIMAG_CITY_CODE = String.valueOf(city.get(position).id);
+                pos1 = position;
+                district = districtdb.getDistrict(Integer.parseInt(AIMAG_CITY_CODE));
+                if(district.size() > 0 )
+                    for (int i=0;i<district.size();i++) {
+                        boolean del = true;
+                        for(int j = 0 ; j < district.size();j++) {
+                            if(district.get(j).id != district.get(i).id)
+                                del = false;
+                        }
+                        if (del == true) {
+                            district.remove(i);
+                            i = i - 1;
+                        }
+                    }
+                ArrayList<String> temp = new ArrayList<>();
+
+                for (int i = 0; i < district.size(); i++) {
+                    temp.add(district.get(i).name);
+                }
+
+                dynamicSpinner_city.setSelection(pos2);
+
+                toirog_sum();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+    private void toirog_sum(){
+        dynamicSpinner_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (district == null) return;
+                pos2 = position;
+                SUM_DUUREG_CODE = String.valueOf(district.get(position).id);
+                district = districtdb.getDistrict(Integer.parseInt(SUM_DUUREG_CODE));
+                if(commission.size() > 0 )
+                    for (int i=0;i<commission.size();i++)
+                    {
+                        boolean del = true;
+                        if(commission.size() != 0) {
+                            for (int j = 0; j < commission.size(); j++) {
+                                if (commission.get(j).id != commission.get(i).id)
+                                    del = false;
+
+                            }
+                            if (del == true) {
+                                commission.remove(i);
+                                i = i - 1;
+                            }
+                        }
+                    }
+                if(commission.size()==0){
+                    commission = commissiondb.getCommission(Integer.parseInt(SUM_DUUREG_CODE));
+                }
+
+                ArrayList<String> temp = new ArrayList<>();
+                for (int i = 0; i < commission.size(); i++) {
+                    temp.add(commission.get(i).name);
+                }
+
+                if(pos3!=-1 && pos3 < temp.size())
+                    dynamicSpinner_district.setSelection(pos3);
+
+                toirog_khoro();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+    private void toirog_khoro(){
+        dynamicSpinner_commission.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (commission == null) return;
+                pos3 = position;
+                if(BAG_HOROO_CODE != commission.get(position).id) {
+                    BAG_HOROO_CODE = commission.get(position).id;
+//                    if (MainActivity.fragmentArrayList != null)
+//                        for (int i = 0; i < MainActivity.fragmentArrayList.size(); i++) {
+//                            ((InterfacePage)MainActivity.fragmentArrayList.get(i)).refresh();
+//                        }
+                }
+
+                ArrayList<Double> lat_array = new ArrayList<Double>();
+                ArrayList<Double> long_array = new ArrayList<Double>();
+
+                try {
+                    JSONArray array = new JSONArray( commission.get(position).boundary);
+                    for (int i = 0 ; i < array.length() ; i++ ){
+                        JSONArray la = array.getJSONArray(i);
+                        if(la.length() == 2){
+                            lat_array.add(la.getDouble(0));
+                            long_array.add(la.getDouble(1));
+                        }
+                    }
+                    if(MainActivity.mLastLocation==null){
+
+                    }
+                    else if(MainActivity.mLastLocation.getLatitude()==0){
+
+                    }
+                    else{
+                        boolean ret =  coordinate_is_inside_polygon(MainActivity.mLastLocation.getLatitude(),MainActivity.mLastLocation.getLongitude(),lat_array,long_array);
+                        Toast.makeText(getApplicationContext(),""+ret,Toast.LENGTH_LONG).show();
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                ArrayList<LocationJson> b = locationdb.getsearch(BAG_HOROO_CODE);
+//                ArrayList<String> temp = new ArrayList<String>();
+//                for (LocationJson a : b) {
+//                    temp.add(a.gudam);
+//                }
+//
+////                spinnerbair.setAdapter(new ArrayAdapter<String>(MainActivity.this,
+////                        android.R.layout.simple_dropdown_item_1line, temp));
+//                ArrayAdapter<String> tempA = new ArrayAdapter<String>(LocationQ.this.getActivity(),
+//                        R.layout.spinneritem, temp);
+//                tempA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                gudamspinner.setAdapter(tempA);
+//                if(temp.size() == 0)
+//                {
+//                    tempA = new ArrayAdapter<String>(LocationQ.this.getActivity(),
+//                            R.layout.spinneritem, temp);
+//                    tempA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                    bairspinner.setAdapter(tempA);
+//                    tempA = new ArrayAdapter<String>(LocationQ.this.getActivity(),
+//                            R.layout.spinneritem, temp);
+//                    tempA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                    tootspinner.setAdapter(tempA);
+//                    locationid ="";
+//                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+    }
+
+    public static boolean coordinate_is_inside_polygon(
+            double latitude, double longitude,
+            ArrayList<Double> lat_array, ArrayList<Double> long_array)
+    {
+        int i;
+        double angle=0;
+        double point1_lat;
+        double point1_long;
+        double point2_lat;
+        double point2_long;
+        int n = lat_array.size();
+
+        for (i=0;i<n;i++) {
+            point1_lat = lat_array.get(i) - latitude;
+            point1_long = long_array.get(i) - longitude;
+            point2_lat = lat_array.get((i+1)%n) - latitude;
+            //you should have paid more attention in high school geometry.
+            point2_long = long_array.get((i+1)%n) - longitude;
+            angle += Angle2D(point1_lat,point1_long,point2_lat,point2_long);
+        }
+
+        if (Math.abs(angle) < PI)
+            return false;
+        else
+            return true;
+    }
+
+    public static double Angle2D(double y1, double x1, double y2, double x2)
+    {
+        double dtheta,theta1,theta2;
+
+        theta1 = Math.atan2(y1,x1);
+        theta2 = Math.atan2(y2,x2);
+        dtheta = theta2 - theta1;
+        while (dtheta > PI)
+            dtheta -= TWOPI;
+        while (dtheta < -PI)
+            dtheta += TWOPI;
+
+        return(dtheta);
+    }
+
+    public int CheckBoundaryInside(){
+        ArrayList<Commission> commissionArrayList = commissiondb.getall();
+        for (int i=0; i<commissionArrayList.size(); i++){
+            ArrayList<Double> lat_array = new ArrayList<Double>();
+            ArrayList<Double> long_array = new ArrayList<Double>();
+
+            try {
+                JSONArray array = new JSONArray( commissionArrayList.get(i).boundary);
+                for (int j = 0 ; j < array.length() ; j++ ){
+                    JSONArray la = array.getJSONArray(j);
+                    if(la.length() == 2){
+                        lat_array.add(la.getDouble(0));
+                        long_array.add(la.getDouble(1));
+                    }
+                }
+                if(MainActivity.mLastLocation==null){
+
+                }
+                else if(MainActivity.mLastLocation.getLatitude()==0){
+
+                }
+                else{
+                    boolean ret =  coordinate_is_inside_polygon(MainActivity.mLastLocation.getLatitude(),MainActivity.mLastLocation.getLongitude(),lat_array,long_array);
+                    if (ret){
+                        Toast.makeText(getApplicationContext(),""+ret+" <-commission->"+commissionArrayList.get(i).id,Toast.LENGTH_LONG).show();
+                        return commissionArrayList.get(i).id;
+                    }
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return  0;
+    }
 
 }

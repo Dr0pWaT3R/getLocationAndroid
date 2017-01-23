@@ -16,7 +16,8 @@ import java.util.ArrayList;
 
 public class Customer {
     public int id,city, duureg, khoroo, type=0, openif=0;
-    public String name="", position="", phone="", outsideImage="", owner="";
+    public String name="", position="", phone="", outsideImage="", owner="",
+            address="", obj_name="";
     public Customer(){}
     public Customer(JSONObject object){
         JSONObject obj;
@@ -31,6 +32,8 @@ public class Customer {
             position = obj.getString("position");
             outsideImage = obj.getString("exitimg");
             openif = obj.getInt("openif");
+            address = obj.getString("address");
+            obj_name = obj.getString("obj_name");
             try {
                 type = obj.getInt("types");
             }catch (Exception e ){}
@@ -53,5 +56,29 @@ public class Customer {
             }
         }
         return customers;
+    }
+
+    public static JSONArray toJson(ArrayList<Customer> customers) {
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < customers.size(); i++) {
+            JSONObject object = new JSONObject();
+            try {
+                object.put("id",customers.get(i).id);
+                object.put("city",customers.get(i).city);
+                object.put("district", customers.get(i).duureg);
+                object.put("commission", customers.get(i).khoroo);
+                object.put("type", customers.get(i).type);
+                object.put("name", customers.get(i).name);
+                object.put("phone", customers.get(i).phone);
+                object.put("position", customers.get(i).position);
+                object.put("owner", customers.get(i).owner);
+                object.put("obj_name", customers.get(i).obj_name);
+                object.put("address", customers.get(i).address);
+                array.put(object);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return array;
     }
 }

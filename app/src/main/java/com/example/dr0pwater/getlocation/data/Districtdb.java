@@ -100,6 +100,27 @@ public class Districtdb {
         db.close();
         return districtName;
     }
+    public ArrayList<District> getDistrict(int city) {
+        ArrayList<District> districts = new ArrayList<>();
+
+        String query = "SELECT  * FROM " + table+ " WHERE city="+city;
+        SQLiteDatabase db = myDatabase.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        District district = null;
+        if (cursor.moveToFirst()) {
+            do {
+
+                district = new District();
+                district.id = cursor.getInt(cursor.getColumnIndex(_id));
+                district.name = cursor.getString(cursor.getColumnIndex(_name));
+                district.city = cursor.getInt(cursor.getColumnIndex(_city));
+                districts.add(district);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return districts;
+    }
     public int getDistrictId(String name){
         String query = "SELECT id FROM `district` WHERE name='"+ name+ "'";
         int districtId=0;

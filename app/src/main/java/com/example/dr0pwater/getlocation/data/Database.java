@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "ApuLocation";
     private static Database sInstance;
     public static synchronized Database getInstance(Context context){
@@ -39,6 +39,8 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(Commissiondb.createtable());
         db.execSQL(Typesdb.createtable());
         db.execSQL(UpdateLocationdb.createtable());
+        db.execSQL(CustomerUpdateInfodb.createtable());
+        db.execSQL(NewCustomerdb.createtable());
     }
     public  void dropTables(SQLiteDatabase db){
         db.execSQL(Customerdb.droptable());
@@ -47,6 +49,8 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(Commissiondb.droptable());
         db.execSQL(Typesdb.droptable());
         db.execSQL(UpdateLocationdb.droptable());
+        db.execSQL(CustomerUpdateInfodb.droptable());
+        db.execSQL(NewCustomerdb.droptable());
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
