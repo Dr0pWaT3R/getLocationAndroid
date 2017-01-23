@@ -39,7 +39,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class DataSendAndDownload extends Activity {
 
-    final public static String HOST = "http://192.168.1.9:8000/";
+    final public static String HOST = "http://sales.smarts.mn/";
     private Database database;
     private Customerdb customerdb;
     private UpdateLocationdb updateLocationdb;

@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putInt("employeeId", empId);
                         editor.apply();
 
-                        Intent in = new Intent(getBaseContext(),MainActivity.class);
+                        Intent in = new Intent(getBaseContext(),Configuration.class);
                         startActivity(in);
 
                     } catch (JSONException e) {

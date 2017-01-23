@@ -62,7 +62,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity implements LocationListener {
-    final public static String HOST  = "http://192.168.1.23:8000/";
+    final public static String HOST  = "http://sales.smarts.mn/";
     private Typeface fontawesome;
     private LocationManager locationManager;
     private boolean providerldisabled = true,burteg_GPS = true, burteg_NETWORK = true;
@@ -121,7 +121,7 @@ public class MainActivity extends Activity implements LocationListener {
                         city_id = city.get(i).id;
                     }
                 }
-//                getDuureg();
+                getDuureg();
             }
 
             @Override
@@ -133,6 +133,7 @@ public class MainActivity extends Activity implements LocationListener {
     }
     public void getDuureg() {
         district = districtdb.getDistrict(city_id);
+        district_id = CheckDistrictInside();
         dynamicSpinner_district = (Spinner) findViewById(R.id.dynamic_spinner_duureg);
         String[] items = new String[district.size()];
 
@@ -153,7 +154,7 @@ public class MainActivity extends Activity implements LocationListener {
                 setPosition = adapter.getPosition(district.get(i).name);
             }
         }
-        dynamicSpinner_commission.setSelection(setPosition);
+        dynamicSpinner_district.setSelection(setPosition);
 
         dynamicSpinner_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -169,7 +170,7 @@ public class MainActivity extends Activity implements LocationListener {
                         district_id = district.get(i).id;
                     }
                 }
-//                getKhoroo();
+                getKhoroo();
 
             }
 
@@ -179,8 +180,9 @@ public class MainActivity extends Activity implements LocationListener {
             }
         });
     }
-    public void getKhoroo(int currentCommission){
+    public void getKhoroo(){
         commission = commissiondb.getCommission(district_id);
+        commission_id = CheckCommissionInside();
         dynamicSpinner_commission = (Spinner) findViewById(R.id.dynamic_spinner_khoroo);
 //        dynamicSpinner_commission.setEnabled(false);
         final String[] commissionItems = new String[commission.size()];
@@ -199,12 +201,10 @@ public class MainActivity extends Activity implements LocationListener {
 
         int setPosition=0;
         for(int i=0; i<commission.size(); i++){
-            if(commission.get(i).id == currentCommission ) {
+            if(commission.get(i).id == commission_id ) {
                 setPosition = adapter.getPosition(commission.get(i).name);
-                Log.d("lol", "getKhoroo: "+commission.get(i).id+"<-curr->"+currentCommission+"->"+district_id);
             }
         }
-        Log.d("lol", "getKhoroo: setPosition-> "+setPosition);
         dynamicSpinner_commission.setSelection(setPosition);
 
         dynamicSpinner_commission.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -212,15 +212,13 @@ public class MainActivity extends Activity implements LocationListener {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
-                getDuureg();
-//                changedCommission = (String)parent.getItemAtPosition(position);
-//                Log.d("query", "onItemSelected: "+changedCommission);
-//                for(int i=0; i<commission.size(); i++){
-//                    if(commission.get(i).name.equals(changedCommission) ) {
-//                        commission_id = commission.get(i).id;
+                changedCommission = (String)parent.getItemAtPosition(position);
+                for(int i=0; i<commission.size(); i++){
+                    if(commission.get(i).name.equals(changedCommission) ) {
+                        commission_id = commission.get(i).id;
 //                        Log.d("query", "getCommissionID: " + commission.get(i).id+"commissionId"+commission_id);
-//                    }
-//                }
+                    }
+                }
                 customerInfo = customerdb.getCustomerInfo(district_id,commission_id);
 //                Toast.makeText(getApplicationContext(),""+districtId+ "commis:"+ commissionId+"cusInfoSize:"+customerInfo.size(),Toast.LENGTH_LONG).show();
                 table.removeAllViews();
@@ -278,11 +276,6 @@ public class MainActivity extends Activity implements LocationListener {
     public void update(){
         getCity();
         getTypes();
-        if (CheckBoundaryInside() != 0){
-            district_id = commissiondb.getDistrictId(CheckBoundaryInside());
-            commission_id = CheckBoundaryInside();
-            getKhoroo(CheckBoundaryInside());
-        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -605,166 +598,9 @@ public class MainActivity extends Activity implements LocationListener {
         }
     };
 
-    private ArrayAdapter<String> sumAdapter,bagadapter,cityadapter;
-    public static String AIMAG_CITY_CODE="", SUM_DUUREG_CODE="";
-    public static int BAG_HOROO_CODE=0;
-    int pos1=-1,pos2=-1,pos3=-1;
     public static double PI = 3.14159265;
     public static double TWOPI = 2*PI;
 
-    private void toirog_aimag(){
-        dynamicSpinner_city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                AIMAG_CITY_CODE = String.valueOf(city.get(position).id);
-                pos1 = position;
-                district = districtdb.getDistrict(Integer.parseInt(AIMAG_CITY_CODE));
-                if(district.size() > 0 )
-                    for (int i=0;i<district.size();i++) {
-                        boolean del = true;
-                        for(int j = 0 ; j < district.size();j++) {
-                            if(district.get(j).id != district.get(i).id)
-                                del = false;
-                        }
-                        if (del == true) {
-                            district.remove(i);
-                            i = i - 1;
-                        }
-                    }
-                ArrayList<String> temp = new ArrayList<>();
-
-                for (int i = 0; i < district.size(); i++) {
-                    temp.add(district.get(i).name);
-                }
-
-                dynamicSpinner_city.setSelection(pos2);
-
-                toirog_sum();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
-    private void toirog_sum(){
-        dynamicSpinner_district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (district == null) return;
-                pos2 = position;
-                SUM_DUUREG_CODE = String.valueOf(district.get(position).id);
-                district = districtdb.getDistrict(Integer.parseInt(SUM_DUUREG_CODE));
-                if(commission.size() > 0 )
-                    for (int i=0;i<commission.size();i++)
-                    {
-                        boolean del = true;
-                        if(commission.size() != 0) {
-                            for (int j = 0; j < commission.size(); j++) {
-                                if (commission.get(j).id != commission.get(i).id)
-                                    del = false;
-
-                            }
-                            if (del == true) {
-                                commission.remove(i);
-                                i = i - 1;
-                            }
-                        }
-                    }
-                if(commission.size()==0){
-                    commission = commissiondb.getCommission(Integer.parseInt(SUM_DUUREG_CODE));
-                }
-
-                ArrayList<String> temp = new ArrayList<>();
-                for (int i = 0; i < commission.size(); i++) {
-                    temp.add(commission.get(i).name);
-                }
-
-                if(pos3!=-1 && pos3 < temp.size())
-                    dynamicSpinner_district.setSelection(pos3);
-
-                toirog_khoro();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-    }
-    private void toirog_khoro(){
-        dynamicSpinner_commission.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (commission == null) return;
-                pos3 = position;
-                if(BAG_HOROO_CODE != commission.get(position).id) {
-                    BAG_HOROO_CODE = commission.get(position).id;
-//                    if (MainActivity.fragmentArrayList != null)
-//                        for (int i = 0; i < MainActivity.fragmentArrayList.size(); i++) {
-//                            ((InterfacePage)MainActivity.fragmentArrayList.get(i)).refresh();
-//                        }
-                }
-
-                ArrayList<Double> lat_array = new ArrayList<Double>();
-                ArrayList<Double> long_array = new ArrayList<Double>();
-
-                try {
-                    JSONArray array = new JSONArray( commission.get(position).boundary);
-                    for (int i = 0 ; i < array.length() ; i++ ){
-                        JSONArray la = array.getJSONArray(i);
-                        if(la.length() == 2){
-                            lat_array.add(la.getDouble(0));
-                            long_array.add(la.getDouble(1));
-                        }
-                    }
-                    if(MainActivity.mLastLocation==null){
-
-                    }
-                    else if(MainActivity.mLastLocation.getLatitude()==0){
-
-                    }
-                    else{
-                        boolean ret =  coordinate_is_inside_polygon(MainActivity.mLastLocation.getLatitude(),MainActivity.mLastLocation.getLongitude(),lat_array,long_array);
-                        Toast.makeText(getApplicationContext(),""+ret,Toast.LENGTH_LONG).show();
-                    }
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-//                ArrayList<LocationJson> b = locationdb.getsearch(BAG_HOROO_CODE);
-//                ArrayList<String> temp = new ArrayList<String>();
-//                for (LocationJson a : b) {
-//                    temp.add(a.gudam);
-//                }
-//
-////                spinnerbair.setAdapter(new ArrayAdapter<String>(MainActivity.this,
-////                        android.R.layout.simple_dropdown_item_1line, temp));
-//                ArrayAdapter<String> tempA = new ArrayAdapter<String>(LocationQ.this.getActivity(),
-//                        R.layout.spinneritem, temp);
-//                tempA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                gudamspinner.setAdapter(tempA);
-//                if(temp.size() == 0)
-//                {
-//                    tempA = new ArrayAdapter<String>(LocationQ.this.getActivity(),
-//                            R.layout.spinneritem, temp);
-//                    tempA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                    bairspinner.setAdapter(tempA);
-//                    tempA = new ArrayAdapter<String>(LocationQ.this.getActivity(),
-//                            R.layout.spinneritem, temp);
-//                    tempA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                    tootspinner.setAdapter(tempA);
-//                    locationid ="";
-//                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-    }
 
     public static boolean coordinate_is_inside_polygon(
             double latitude, double longitude,
@@ -808,14 +644,14 @@ public class MainActivity extends Activity implements LocationListener {
         return(dtheta);
     }
 
-    public int CheckBoundaryInside(){
-        ArrayList<Commission> commissionArrayList = commissiondb.getall();
-        for (int i=0; i<commissionArrayList.size(); i++){
+    public int CheckDistrictInside(){
+//        ArrayList<District> districtArrayList = districtdb.getall();
+        for (int i=0; i<district.size(); i++){
             ArrayList<Double> lat_array = new ArrayList<Double>();
             ArrayList<Double> long_array = new ArrayList<Double>();
-
+            Log.d("lol", "CheckDistrictInside: "+district.get(i).id);
             try {
-                JSONArray array = new JSONArray( commissionArrayList.get(i).boundary);
+                JSONArray array = new JSONArray( district.get(i).boundary);
                 for (int j = 0 ; j < array.length() ; j++ ){
                     JSONArray la = array.getJSONArray(j);
                     if(la.length() == 2){
@@ -832,8 +668,44 @@ public class MainActivity extends Activity implements LocationListener {
                 else{
                     boolean ret =  coordinate_is_inside_polygon(MainActivity.mLastLocation.getLatitude(),MainActivity.mLastLocation.getLongitude(),lat_array,long_array);
                     if (ret){
-                        Toast.makeText(getApplicationContext(),""+ret+" <-commission->"+commissionArrayList.get(i).id,Toast.LENGTH_LONG).show();
-                        return commissionArrayList.get(i).id;
+//                        Toast.makeText(getApplicationContext(),""+ret+" <-district->"+district.get(i).id,Toast.LENGTH_LONG).show();
+                        return district.get(i).id;
+                    }
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return  0;
+    }
+    public int CheckCommissionInside(){
+//        ArrayList<Commission> commissionArrayList = commissiondb.getall();
+        for (int i=0; i<commission.size(); i++){
+            ArrayList<Double> lat_array = new ArrayList<Double>();
+            ArrayList<Double> long_array = new ArrayList<Double>();
+
+            try {
+                JSONArray array = new JSONArray( commission.get(i).boundary);
+                for (int j = 0 ; j < array.length() ; j++ ){
+                    JSONArray la = array.getJSONArray(j);
+                    if(la.length() == 2){
+                        lat_array.add(la.getDouble(0));
+                        long_array.add(la.getDouble(1));
+                    }
+                }
+                if(MainActivity.mLastLocation==null){
+
+                }
+                else if(MainActivity.mLastLocation.getLatitude()==0){
+
+                }
+                else{
+                    boolean ret =  coordinate_is_inside_polygon(MainActivity.mLastLocation.getLatitude(),MainActivity.mLastLocation.getLongitude(),lat_array,long_array);
+                    if (ret){
+//                        Toast.makeText(getApplicationContext(),""+ret+" <-commission->"+commission.get(i).id,Toast.LENGTH_LONG).show();
+                        return commission.get(i).id;
                     }
                 }
 

@@ -17,6 +17,7 @@ public class Districtdb {
     public static final String _id = "id";
     public static final String _city = "city";
     public static final String _name = "name";
+    public static final String _boundary = "boundary";
 
     public Districtdb(Database context) {
         myDatabase = context;
@@ -25,7 +26,8 @@ public class Districtdb {
     static public String createtable(){
         String CREATE_BOOK_TABLE = "CREATE TABLE "+table+" ( " + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 +_name+ " text,"
-                +_city+ " int"
+                +_city+ " int,"
+                +_boundary+ " text"
                 +" ); " ;
         return CREATE_BOOK_TABLE;
     }
@@ -39,6 +41,7 @@ public class Districtdb {
         ContentValues values = new ContentValues();
         values.put(_name, district.name);
         values.put(_city, district.city);
+        values.put(_boundary, district.boundary);
         values.put(_id, district.id);
         db.insert(table, null, values);
         // close database transaction
@@ -50,14 +53,16 @@ public class Districtdb {
         String sql = "INSERT OR REPLACE INTO "+table+" (" +
                 _name + "," +
                 _city+ "," +
+                _boundary+ "," +
                 _id + "" +
-                " ) VALUES ( ?,?,?)";
+                " ) VALUES ( ?,?,?,?)";
         db.beginTransaction();
         SQLiteStatement stmt = db.compileStatement(sql);
         for (District a : districts) {
             stmt.bindString(1, a.name);
             stmt.bindLong(2, a.city);
-            stmt.bindLong(3, a.id);
+            stmt.bindString(3, a.boundary);
+            stmt.bindLong(4, a.id);
             stmt.execute();
             stmt.clearBindings();
         }
@@ -79,6 +84,7 @@ public class Districtdb {
                 district.id = cursor.getInt(cursor.getColumnIndex(_id));
                 district.name = cursor.getString(cursor.getColumnIndex(_name));
                 district.city = cursor.getInt(cursor.getColumnIndex(_city));
+                district.boundary = cursor.getString(cursor.getColumnIndex(_boundary));
                 districts.add(district);
             } while (cursor.moveToNext());
         }
@@ -109,11 +115,11 @@ public class Districtdb {
         District district = null;
         if (cursor.moveToFirst()) {
             do {
-
                 district = new District();
                 district.id = cursor.getInt(cursor.getColumnIndex(_id));
                 district.name = cursor.getString(cursor.getColumnIndex(_name));
                 district.city = cursor.getInt(cursor.getColumnIndex(_city));
+                district.boundary = cursor.getString(cursor.getColumnIndex(_boundary));
                 districts.add(district);
             } while (cursor.moveToNext());
         }

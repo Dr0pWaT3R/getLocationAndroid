@@ -36,23 +36,9 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
                 <RelativeLayout
+                    android:id="@+id/cusRegister_rLayout_id"
                     android:layout_width="wrap_content"
-                    android:background="#000"
                     android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:gravity="center"
-                            android:layout_height="wrap_content"
-                            android:text="upload"/>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="take capture"/>
-                    </LinearLayout>
                     <ImageView
                         android:id="@+id/cusRegister_outsideImg_id"
                         android:layout_width="fill_parent"
@@ -60,11 +46,36 @@
                         android:background="@android:color/transparent"
                         android:src="@drawable/font_awesome_image_150_5_ffffff_none"
                         tools:ignore="ContentDescription" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/cusRegister_changeOutideImage_id"
+                        android:visibility="gone"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
+                        <Button
+                            android:id="@+id/cusRegister_upload_img_id"
+                            android:layout_width="150dp"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:background="#fff"
+                            android:textColor="#000"
+                            android:text="upload"/>
+                        <Button
+                            android:id="@+id/cusRegister_take_img_id"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:background="#fff"
+                            android:layout_marginTop="3dp"
+                            android:layout_gravity="center"
+                            android:textColor="#000"
+                            android:text="take capture"/>
+                    </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/cusdetail_mapIcon_id"
+            <ImageView
+                android:id="@+id/cusRegister_mapIcon_id"
                 android:layout_width="fill_parent"
                 android:layout_height="150dp"
                 android:layout_weight="1"

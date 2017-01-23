@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class District {
     public int id, city;
-    public String name="";
+    public String name="", boundary="";
     public District(){}
     public District(JSONObject object){
         JSONObject obj;
@@ -21,6 +21,7 @@ public class District {
             obj = object.getJSONObject("fields");
             name = obj.getString("name");
             city = obj.getInt("aim");
+            boundary = obj.getString("boundary");
         }catch (JSONException e){
             e.printStackTrace();
         }

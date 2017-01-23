@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/background"
-    tools:context=".LoginActivity">
+    android:background="@drawable/map_location"
+    tools:context=".main.LoginActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -73,9 +73,11 @@
                             android:id="@+id/email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/font_awesome_user_25_5_050505_none"
                             android:inputType="text"
                             android:padding="6dp"
-                            android:background="#55ffffff"
+                            android:background="#ffffff"
+                            android:textColor="#000"
                             android:maxLines="1"
                             tools:ignore="RtlHardcoded" />
 
@@ -91,13 +93,15 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/prompt_password"
                             android:imeActionId="@+id/login"
+                            android:drawableLeft="@drawable/font_awesome_lock_25_5_050505_none"
                             android:padding="6dp"
                             android:paddingLeft="3dp"
                             android:imeActionLabel="@string/action_sign_in"
                             android:imeOptions="actionUnspecified"
                             android:inputType="textPassword"
                             android:maxLines="1"
-                            android:background="#55ffffff"
+                            android:background="#ffffff"
+                            android:textColor="#000"
                             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
                     </android.support.design.widget.TextInputLayout>
